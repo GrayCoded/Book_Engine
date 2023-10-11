@@ -6,23 +6,20 @@ import App from './App.jsx'
 import SearchBooks from './pages/SearchBooks'
 import SavedBooks from './pages/SavedBooks'
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <App />,
-    errorElement: <h1 className='display-2'>Wrong page!</h1>,
-    children: [
-      {
-        index: true,
-        element: <SearchBooks />
-      }, {
-        path: '/saved',
-        element: <SavedBooks />
-      }
-    ]
-  }
-])
+const root = document.getElementById('root');
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <RouterProvider router={router} />
-)
+if (root) {
+  const reactRoot = ReactDOM.createRoot(root);
+
+reactRoot.render(
+  <Router>
+    <App>
+      <Switch>
+        <Route exact path='/' component={SearchBooks} />
+        <Route exact path='/saved' component={SavedBooks} />
+        <Route render={() => <h1 className='display-2'>Wrong page!</h1>} />
+      </Switch>
+    </App>
+  </Router>
+);
+}
