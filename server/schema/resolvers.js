@@ -4,10 +4,10 @@ const { signToken } = require('../utils/auth');
 
 const resolvers = {
   Query: {
-    me: async (_, _, context) => {
+    me: async (parent, args, context) => {
       if (context.user) {
         const userData = await User.findOne({ _id: context.user._id })
-          .select('-_v -__password')
+          .select('-__v -password')
           .populate('savedBooks');
       }
       throw new AuthenticationError('You need to be logged in!');
@@ -16,7 +16,7 @@ const resolvers = {
 
 
   Mutation: {
-    login: async (_, { email, password }) => {
+    parent: async (_, { email, password }) => {
       const user = await User.findOne({ email });
 
       if (!user) {
