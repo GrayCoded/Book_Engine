@@ -1,51 +1,56 @@
-import React from 'react';
-import { 
-  Container, 
-  Card, 
-  Button, 
-  Row, 
-  Col } from 'react-bootstrap';
-import { useQuery, useMutation } from '@apollo/client'; 
-import { GET_ME } from '../utils/queries'; 
-import { REMOVE_BOOK } from '../utils/mutations'; 
+import { useState, useEffect } from 'react';
+import {
+  Container,
+  Card,
+  Button,
+  Row,
+  Col
+} from 'react-bootstrap';
+import { GET_ME } from '../utils/queries';
+import { useQuery, useMutation } from '@apollo/client';
+import { REMOVE_BOOK } from '../utils/mutation';
 import { removeBookId } from '../utils/localStorage';
+import Auth from '../utils/auth';
 
 const SavedBooks = () => {
   const { loading, error, data, refetch } = useQuery(GET_ME);
-  const [removeBook, { error: removeError }] = useMutation(REMOVE_BOOK);
-
-
-  if (loading) {
-    return <h2>Loading...</h2>;
-  }
-
-  if (error || removeError) {
-    console.error(error || removeError);
-    return <div>Something went wrong.</div>;
-  }
-
-  
+  const [removeBook, { error: removeBookError }] = useMutation(REMOVE_BOOK);
   const userData = data?.me || {};
 
-  // book deletion
-  const handleDeleteBook = async (bookId) => {
-    try {
-      //  delete the book
-      const response = await removeBook({
-        variables: { bookId },
-      });
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-      if (response.errors) {
-        throw new Error('Failed to remove book.');
+  if (error || removeBookError) {
+    console.error(error || removeBookError);
+    return (
+      <h2>
+        An error has occured.
+      </h2>
+    );
+  }
+
+  // create function that accepts the book's mongo _id value as param and deletes the book from the database
+ const handleDeleteBook = async (bookId) => {
+    const token = Auth.loggedIn() ? Auth.getToken() : null;
+
+    try {
+      const response = await removeBook({variables: { bookId }});
+
+      if (!response.errors) {
+        throw new Error('something went wrong!');
       }
 
+      // upon success, remove book's id from localStorage
       removeBookId(bookId);
-      
+
       refetch();
     } catch (err) {
       console.error(err);
     }
   };
+
+
   return (
     <>
       <div fluid className="text-light bg-dark p-5">
