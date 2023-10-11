@@ -1,4 +1,7 @@
+require ('dotenv').config({ path: '../.env' });
+
 const express = require('express');
+const mongoose = require('mongoose');
 const path = require('path');
 const db = require('./config/connection');
 const routes = require('./routes');
@@ -6,11 +9,10 @@ const { typeDefs, resolvers } = require('./schemas');
 const { ApolloServer } = require('apollo-server-express');
 const mongoose = require('mongoose');
 const { authMiddleware } = require('./utils/auth');
-require ('dotenv').config({path: '../.env' });
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 mongoose
