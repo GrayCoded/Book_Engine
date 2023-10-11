@@ -8,7 +8,7 @@ const { typeDefs, resolvers } = require('./schemas');
 const { ApolloServer } = require('apollo-server-express');
 const { authMiddleware } = require('./utils/auth');
 const app = express();
-const PORT = process.env.PORT || 5517;
+const PORT = process.env.PORT || 5516;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

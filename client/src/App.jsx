@@ -13,7 +13,7 @@ import process from "process";
 const httpLink = createHttpLink({
   uri: process.env.NODE_ENV === 'production'
     ? 'https://book-engine-v1-508355d22e8a.herokuapp.com/graphql'
-    : 'http://localhost:3001/graphql',
+    : 'http://localhost:3001',
 });
 
 const authLink = setContext((_, { headers }) => {

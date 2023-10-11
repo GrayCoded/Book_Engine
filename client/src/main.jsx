@@ -1,4 +1,4 @@
-import ReactDOM from 'react-dom/client';
+import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -9,17 +9,15 @@ import SavedBooks from './pages/SavedBooks';
 const root = document.getElementById('root');
 
 if (root) {
-  const reactRoot = ReactDOM.createRoot(root);
-
-  reactRoot.render(
+  ReactDOM.render(
     <Router>
-      <App>
-        <Switch>
-          <Route exact path='/' component={SearchBooks} />
-          <Route exact path='/saved' component={SavedBooks} />
-          <Route render={() => <h1 className='display-2'>Wrong page!</h1>} />
-        </Switch>
-      </App>
-    </Router>
+      <App />
+      <Switch>
+        <Route exact path='/' component={SearchBooks} />
+        <Route exact path='/saved' component={SavedBooks} />
+        <Route render={() => <h1 className='display-2'>Wrong page!</h1>} />
+      </Switch>
+    </Router>,
+    root
   );
 }

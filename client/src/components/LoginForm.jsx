@@ -27,9 +27,10 @@ const LoginForm = () => {
     }
 
     try {
-    const { data } = await loginUser({ variables: { email: userFormData.email, password: userFormData.password }});
-    const { token, user} = data.loginUser;
-    Auth.login(token);
+      const { data } = await loginUser({ variables: { email: userFormData.email, password: userFormData.password }});
+      const { token, user } = data.loginUser;
+      Auth.login(token);
+
     } catch (err) {
       console.error(err);
       setShowAlert(true);
@@ -39,7 +40,12 @@ const LoginForm = () => {
       email: '',
       password: '',
     });
+
+    if (!response.ok) {
+      throw new Error('something went wrong!');
+    }
   };
+
 
   return (
     <>
