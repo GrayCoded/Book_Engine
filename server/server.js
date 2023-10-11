@@ -4,18 +4,38 @@ const db = require('./config/connection');
 const routes = require('./routes');
 const { typeDefs, resolvers } = require('./schemas');
 const { ApolloServer } = require('apollo-server-express');
-
+const mongoose = require('mongoose');
+const { authMiddleware } = require('./utils/auth');
+require ('dotenv').config({path: '../.env' });
 const app = express();
 const PORT = process.env.PORT || 3001;
-const server = new ApolloServer({
-  typeDefs,
-  resolvers
-});
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+mongoose
+.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => {
+  console.log('Connection to MongoDB Atlas successful!');
+})
+.catch((err) => {
+  console.error('Error connecting to MongoDB Atlas: ', err);
+});
 // if we're in production, serve client/build as static assets
+
+app.use(authMiddleware);
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: ({ req }) => ({ req }),
+});
+
+server.applyMiddleware({ app });
+
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/build')));
 }
